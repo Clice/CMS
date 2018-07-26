@@ -15,7 +15,7 @@ if (isset($_GET['id'])) {
             <label for="category">Post Category</label>
             <select class="form-control" name="postCategoryId" id="">
                 <option value="0">Select</option>
-                <?php select_categories(); ?>
+                <?php select_categories($data['postCategoryId']); ?>
             </select>
         </div>
         <div class="form-group">
@@ -24,7 +24,11 @@ if (isset($_GET['id'])) {
         </div>
         <div class="form-group">
             <label for="post_status">Post Status</label>
-            <input type="text" class="form-control" name="postStatus" value="<?php echo $data['postStatus']; ?>">
+            <select class="form-control" name="postStatus" id="">
+                <option value="0">Select</option>
+                <option value="Draft" <?php if ($data['postStatus'] == 'Draft') { echo 'selected'; }?>>Draft</option>
+                <option value="Published" <?php if ($data['postStatus'] == 'Published') { echo 'selected'; }?>>Published</option>
+            </select>
         </div>
         <div class="form-group">
             <label for="post_image">Post Image</label><br>
@@ -37,7 +41,7 @@ if (isset($_GET['id'])) {
         </div>
         <div class="form-group">
             <label for="post_content">Post Content</label>
-            <textarea class="form-control" name="postContent" id="" cols="30" rows="10"><?php echo $data['postContent']; ?></textarea>
+            <textarea class="form-control" name="postContent" id="body" cols="30" rows="10"><?php echo $data['postContent']; ?></textarea>
         </div>
         <div class="form-group">
             <input type="submit" class="btn btn-primary" name="update_post" value="Update Post">

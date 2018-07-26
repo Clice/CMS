@@ -56,7 +56,7 @@ include "includes/navigation.php";
                     <hr>
 
                     <!-- Post Content -->
-                    <p class="lead text-justify"><?php echo $postContent; ?></p>
+                    <p class="text-justify"><?php echo $postContent; ?></p>
                     <?php
                 }
             }

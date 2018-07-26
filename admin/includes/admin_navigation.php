@@ -13,7 +13,8 @@
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> John Smith <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>
+                <?php echo $_SESSION['userFirstName'] . " " . $_SESSION['userLastName'];?> <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li>
                     <a href="views/profile.php"><i class="fa fa-fw fa-user"></i> Profile</a>
@@ -52,7 +53,7 @@
                 <a href="categories.php"><i class="fa fa-fw fa-wrench"></i> Categories</a>
             </li>
             <li>
-                <a href="comments.php?source=view_all_comments"><i class="fa fa-fw fa-file"></i> Comments</a>
+                <a href="comments.php"><i class="fa fa-fw fa-file"></i> Comments</a>
             </li>
             <li>
                 <a href="#" data-toggle="collapse" data-target="#users"><i class="fa fa-fw fa-arrows-v"></i> Users <i class="fa fa-fw fa-caret-down"></i></a>

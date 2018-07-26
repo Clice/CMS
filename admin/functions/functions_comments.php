@@ -8,12 +8,16 @@ function insert_comment() {
         $commentEmail = $_POST['commentEmail'];
         $commentContent = $_POST['commentContent'];
         $commentPostId = $_POST['commentPostId'];
-        add_comment_count($commentPostId);
 
-        $query = "INSERT INTO comments(commentAuthor, commentEmail, commentContent, commentPostId, commentStatus, commentDate) ";
-        $query .= "VALUES('$commentAuthor', '$commentEmail', '$commentContent', $commentPostId, 'disapproved', now())";
-        $create_comment_query = mysqli_query($connection, $query);
-        confirmQuery($create_comment_query);
+        if (!empty($commentAuthor) && !empty($commentEmail) && !empty($commentContent) && empty($commentPostId)) {
+            add_comment_count($commentPostId);
+            $query = "INSERT INTO comments(commentAuthor, commentEmail, commentContent, commentPostId, commentStatus, commentDate) ";
+            $query .= "VALUES('$commentAuthor', '$commentEmail', '$commentContent', $commentPostId, 'Disapproved', now())";
+            $create_comment_query = mysqli_query($connection, $query);
+            confirmQuery($create_comment_query);
+        } else {
+            echo "<div class='alert alert-danger' role='alert'>Fields cannot be empty.</div>";
+        }
     }
 }
 
@@ -58,7 +62,7 @@ function delete_comment() {
         $delete_query = mysqli_query($connection, $query);
         confirmQuery($delete_query);
         sub_comment_count($_GET['id']);
-        header("Location: comments.php?source=view_all_comments");
+        header("Location: comments.php");
     }
 }
 
@@ -67,10 +71,10 @@ function approve_comment() {
 
     if (isset($_GET['approve'])) {
         $commentId = $_GET['approve'];
-        $query = "UPDATE comments SET commentStatus = 'approved' WHERE commentId = $commentId";
+        $query = "UPDATE comments SET commentStatus = 'Approved' WHERE commentId = $commentId";
         $approve_query = mysqli_query($connection, $query);
         confirmQuery($approve_query);
-        header("Location: comments.php?source=view_all_comments");
+        header("Location: comments.php");
     }
 }
 
@@ -79,10 +83,10 @@ function disapprove_comment() {
 
     if (isset($_GET['disapprove'])) {
         $commentId = $_GET['disapprove'];
-        $query = "UPDATE comments SET commentStatus = 'disapproved' WHERE commentId = $commentId";
+        $query = "UPDATE comments SET commentStatus = 'Disapproved' WHERE commentId = $commentId";
         $disapprove_query = mysqli_query($connection, $query);
         confirmQuery($disapprove_query);
-        header("Location: comments.php?source=view_all_comments");
+        header("Location: comments.php");
     }
 }
 
@@ -90,7 +94,7 @@ function comments_list($postId) {
     global $connection;
 
     if (isset($postId)) {
-        $query = "SELECT * FROM comments WHERE commentPostId = $postId AND commentStatus = 'approved' ORDER BY commentId DESC";
+        $query = "SELECT * FROM comments WHERE commentPostId = $postId AND commentStatus = 'Approved' ORDER BY commentId DESC";
         $select_comments_by_post_id = mysqli_query($connection, $query);
         confirmQuery($select_comments_by_post_id);
 
@@ -113,4 +117,31 @@ function comments_list($postId) {
             <?php
         }
     }
+}
+
+function num_comments() {
+    global $connection;
+    $query = "SELECT * FROM comments";
+    $select_all_comments = mysqli_query($connection, $query);
+    confirmQuery($select_all_comments);
+    $num_comments = mysqli_num_rows($select_all_comments);
+    return $num_comments;
+}
+
+function num_approved_comments() {
+    global $connection;
+    $query = "SELECT * FROM comments WHERE commentStatus = 'Approved'";
+    $select_all_approved_comments = mysqli_query($connection, $query);
+    confirmQuery($select_all_approved_comments);
+    $num_approved_comments = mysqli_num_rows($select_all_approved_comments);
+    return $num_approved_comments;
+}
+
+function num_disapproved_comments() {
+    global $connection;
+    $query = "SELECT * FROM comments WHERE commentStatus = 'Disapproved'";
+    $select_all_disapproved_comments = mysqli_query($connection, $query);
+    confirmQuery($select_all_disapproved_comments);
+    $num_disapproved_comments = mysqli_num_rows($select_all_disapproved_comments);
+    return $num_disapproved_comments;
 }

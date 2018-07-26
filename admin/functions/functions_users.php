@@ -16,6 +16,7 @@ function insert_user() {
             $query .= "VALUES('$userName', '$userPassword', '$userFirstName', '$userLastName', '$userEmail', '$userRole')";
             $add_user_query = mysqli_query($connection, $query);
             confirmQuery($add_user_query);
+            echo "User Created: " . "<a href='users.php?source=view_all_users'>View All Users</a>";
         } else {
             echo "Please, select a role for the user.";
         }
@@ -163,4 +164,31 @@ function change_to_sub() {
         confirmQuery($change_to_sub_query);
         header("Location: users.php?source=view_all_users");
     }
+}
+
+function num_users() {
+    global $connection;
+    $query = "SELECT * FROM users";
+    $select_all_users = mysqli_query($connection, $query);
+    confirmQuery($select_all_users);
+    $num_users = mysqli_num_rows($select_all_users);
+    return $num_users;
+}
+
+function num_admin_users() {
+    global $connection;
+    $query = "SELECT * FROM users WHERE userRole = 'Admin'";
+    $select_all_admin_users = mysqli_query($connection, $query);
+    confirmQuery($select_all_admin_users);
+    $num_admin_users = mysqli_num_rows($select_all_admin_users);
+    return $num_admin_users;
+}
+
+function num_subs_users() {
+    global $connection;
+    $query = "SELECT * FROM users WHERE userRole = 'Subscriber'";
+    $select_all_subs_users = mysqli_query($connection, $query);
+    confirmQuery($select_all_subs_users);
+    $num_subs_users = mysqli_num_rows($select_all_subs_users);
+    return $num_subs_users;
 }

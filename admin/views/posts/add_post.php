@@ -9,7 +9,7 @@
         <label for="post_category">Post Category</label>
         <select class="form-control" name="postCategoryId" id="">
             <option value="0">Select</option>
-            <?php select_categories(); ?>
+            <?php select_categories(0); ?>
         </select>
     </div>
     <div class="form-group">
@@ -18,7 +18,11 @@
     </div>
     <div class="form-group">
         <label for="post_status">Post Status</label>
-        <input type="text" class="form-control" name="postStatus">
+        <select class="form-control" name="postStatus" id="">
+            <option value="0">Select</option>
+            <option value="Draft">Draft</option>
+            <option value="Published">Published</option>
+        </select>
     </div>
     <div class="form-group">
         <label for="post_image">Post Image</label>
@@ -30,7 +34,7 @@
     </div>
     <div class="form-group">
         <label for="post_content">Post Content</label>
-        <textarea class="form-control" name="postContent" id="" cols="30" rows="10"></textarea>
+        <textarea class="form-control" name="postContent" id="body" cols="30" rows="10"></textarea>
     </div>
     <div class="form-group">
         <input type="submit" class="btn btn-primary" name="create_post" value="Publish Post">

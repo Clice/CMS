@@ -17,12 +17,6 @@ include "includes/navigation.php";
 
             $select_all_posts_query = mysqli_query($connection, $query);
 
-            if ($select_all_posts_query->num_rows == 0) {
-                ?>
-                <h1 class="text-center">SORRY! NO POSTS.</h1>
-                <?php
-            }
-
             while ($row = mysqli_fetch_assoc($select_all_posts_query)) {
                 $postId = $row['postId'];
                 $postTitle = $row['postTitle'];
@@ -50,10 +44,10 @@ include "includes/navigation.php";
                 </p>
                 <p><span class="glyphicon glyphicon-time"></span> <?php echo $postDate; ?></p>
                 <hr>
-                <img class="img-responsive" src="admin/images/<?php echo $postImage; ?>" alt="">
+                <a href="post.php?id=<?php echo $postId; ?>"><img class="img-responsive" src="admin/images/<?php echo $postImage; ?>" alt=""></a>
                 <hr>
                 <p class="text-justify"><?php echo $postContent . "..."; ?></p>
-                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+                <a class="btn btn-primary" href="post.php?id=<?php echo $postId; ?>">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
                 <?php } ?>
             <hr>
 

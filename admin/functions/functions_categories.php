@@ -60,7 +60,7 @@ function update_category() {
             if (!$update_category_title) {
                 echo "Error updating the category title.";
             } else {
-                header("Location: category.php");
+                header("Location: categories.php");
             }
         }
     }
@@ -86,7 +86,7 @@ function find_all_categories() {
     }
 }
 
-function select_categories() {
+function select_categories($postCategoryId) {
     global $connection;
     $query = "SELECT * FROM categories";
     $select_categories = mysqli_query($connection, $query);
@@ -96,7 +96,7 @@ function select_categories() {
         $categoryId = $row['categoryId'];
         $categoryTitle = $row['categoryTitle'];
         ?>
-        <option value="<?php echo $categoryId; ?>"><?php echo $categoryTitle; ?></option>
+        <option value="<?php echo $categoryId; ?>" <?php if ($categoryId == $postCategoryId) { echo 'selected'; } ?>><?php echo $categoryTitle; ?></option>
     <?php
     }
 }
@@ -122,6 +122,15 @@ function delete_category() {
         $query = "DELETE FROM categories WHERE categoryId = $auxCategoryId";
         $query_delete = mysqli_query($connection, $query);
         confirmQuery($query_delete);
-        header("Location: category.php");
+        header("Location: categories.php");
     }
+}
+
+function num_categories() {
+    global $connection;
+    $query = "SELECT * FROM categories";
+    $select_all_categories = mysqli_query($connection, $query);
+    confirmQuery($select_all_categories);
+    $num_categories = mysqli_num_rows($select_all_categories);
+    return $num_categories;
 }

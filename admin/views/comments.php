@@ -15,27 +15,7 @@ include "../includes/admin_navigation.php";
                     <small>Subheading</small>
                 </h1>
 
-                <?php
-                if (isset($_GET['source'])) {
-                    $source = $_GET['source'];
-                } else {
-                    $source = "";
-                }
-
-                switch ($source) {
-                    case 'add_post':
-                        include "posts/add_post.php";
-                        break;
-
-                    case 'edit_post':
-                        include "posts/edit_post.php";
-                        break;
-
-                    case 'view_all_comments':
-                        include "comments/view_all_comments.php";
-                        break;
-                }
-                ?>
+                <?php include "comments/view_all_comments.php"; ?>
             </div>
         </div>
         <!-- /.row -->

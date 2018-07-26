@@ -16,9 +16,12 @@ function insert_post() {
 
         move_uploaded_file($auxPostImage, "../images/$postImage");
         $query = "INSERT INTO posts(postTitle, postAuthor, postCategoryId, postStatus, postImage, postTags, postContent, postDate, postCommentCount) ";
-        $query .= "VALUES('$postTitle', '$postAuthor', $postCategoryId, $postStatus, '$postImage', '$postTags', '$postContent', now(), $postCommentCount)";
+        $query .= "VALUES('$postTitle', '$postAuthor', $postCategoryId, '$postStatus', '$postImage', '$postTags', '$postContent', now(), $postCommentCount)";
         $create_post_query = mysqli_query($connection, $query);
         confirmQuery($create_post_query);
+        $postId = mysqli_insert_id($connection);
+
+        echo "<div class='alert alert-success' role='alert'>Post Created. <a href='../../post.php?id=$postId'>View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
     }
 }
 
@@ -38,12 +41,14 @@ function update_post() {
         $postCommentCount = $_POST['postCommentCount'];
 
         move_uploaded_file($auxPostImage, "../images/$postImage");
-        $postImage = emptyImage($postImage);
-        $query = "UPDATE posts SET postTitle = '$postTitle', postAuthor = '$postAuthor', postCategoryId = $postCategoryId, postStatus = $postStatus, ";
+        $postImage = emptyImage($postImage, $postId);
+        $query = "UPDATE posts SET postTitle = '$postTitle', postAuthor = '$postAuthor', postCategoryId = $postCategoryId, postStatus = '$postStatus', ";
         $query .= "postImage = '$postImage', postTags = '$postTags', postContent = '$postContent', postDate = now(), postCommentCount = $postCommentCount ";
         $query .= "WHERE postId = $postId";
         $update_post_query = mysqli_query($connection, $query);
         confirmQuery($update_post_query);
+
+        echo "<div class='alert alert-success' role='alert'>Post Updated: <a href='../../post.php?id=$postId'>View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
     }
 }
 
@@ -65,9 +70,10 @@ function find_all_posts() {
         $postDate = $row['postDate'];
         ?>
         <tr>
+            <td><input class="checkBoxes" type="checkbox" name="checkBoxArray[]" value="<?php echo $postId; ?>"></td>
             <td><?php echo $postId; ?></td>
             <td><?php echo $postAuthor; ?></td>
-            <td><?php echo $postTitle; ?></td>
+            <td><a href="../../post.php?id=<?php echo $postId;?>"><?php echo $postTitle; ?></a></td>
             <td><?php echo $postCategoryId; ?></td>
             <td><?php echo $postStatus; ?></td>
             <td><img src="../images/<?php echo $postImage; ?>" alt="image" width="100"></td>
@@ -122,7 +128,7 @@ function publish_post() {
     if (isset($_GET['publish'])) {
         $postId = $_GET['publish'];
         echo $postId;
-        $query = "UPDATE posts SET postStatus = 'published' ";
+        $query = "UPDATE posts SET postStatus = 'Published' ";
         $query .= "WHERE postId = $postId";
         $publish_post = mysqli_query($connection, $query);
         confirmQuery($publish_post);
@@ -158,4 +164,45 @@ function emptyImage($postImage, $postId) {
         }
     }
     return $postImage;
+}
+
+function num_posts() {
+    global $connection;
+    $query = "SELECT * FROM posts";
+    $select_all_posts = mysqli_query($connection, $query);
+    confirmQuery($select_all_posts);
+    $num_posts = mysqli_num_rows($select_all_posts);
+    return $num_posts;
+}
+
+function num_published_posts() {
+    global $connection;
+    $query = "SELECT * FROM posts WHERE postStatus = 'Published'";
+    $select_all_published_posts = mysqli_query($connection, $query);
+    confirmQuery($select_all_published_posts);
+    $num_published_posts = mysqli_num_rows($select_all_published_posts);
+    return $num_published_posts;
+}
+
+function num_draft_posts() {
+    global $connection;
+    $query = "SELECT * FROM posts WHERE postStatus = 'Draft'";
+    $select_all_draft_posts = mysqli_query($connection, $query);
+    confirmQuery($select_all_draft_posts);
+    $num_draft_posts = mysqli_num_rows($select_all_draft_posts);
+    return $num_draft_posts;
+}
+
+function update_status($bulkOptions, $postId) {
+    global $connection;
+    $query = "UPDATE posts SET postStatus = '$bulkOptions' WHERE postId = $postId";
+    $update_status = mysqli_query($connection, $query);
+    confirmQuery($update_status);
+}
+
+function delete_post_table($postId) {
+    global $connection;
+    $query = "DELETE FROM posts WHERE postId = $postId";
+    $delete_query = mysqli_query($connection, $query);
+    confirmQuery($delete_query);
 }
