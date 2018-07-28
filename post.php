@@ -19,6 +19,10 @@ include "includes/navigation.php";
             if (isset($_GET['id'])) {
                 $postId = $_GET['id'];
 
+                $view_query = "UPDATE posts SET postViewsCount = postViewsCount + 1 WHERE postId = $postId";
+                $send_query = mysqli_query($connection, $view_query);
+                confirmQuery($send_query);
+
                 $query = "SELECT * FROM posts WHERE postId = $postId";
 
                 $select_post_by_id = mysqli_query($connection, $query);
@@ -59,6 +63,8 @@ include "includes/navigation.php";
                     <p class="text-justify"><?php echo $postContent; ?></p>
                     <?php
                 }
+            } else {
+                header("Location: index.php");
             }
             ?>
             <hr>

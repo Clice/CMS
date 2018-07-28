@@ -15,13 +15,15 @@ function insert_post() {
         $postCommentCount = 0;
 
         move_uploaded_file($auxPostImage, "../images/$postImage");
-        $query = "INSERT INTO posts(postTitle, postAuthor, postCategoryId, postStatus, postImage, postTags, postContent, postDate, postCommentCount) ";
-        $query .= "VALUES('$postTitle', '$postAuthor', $postCategoryId, '$postStatus', '$postImage', '$postTags', '$postContent', now(), $postCommentCount)";
+        $query = "INSERT INTO posts(postTitle, postAuthor, postCategoryId, postStatus, postImage, postTags, postContent, " .
+            "postDate, postCommentCount) VALUES('$postTitle', '$postAuthor', $postCategoryId, '$postStatus', '$postImage', " .
+            "'$postTags', '$postContent', now(), $postCommentCount)";
         $create_post_query = mysqli_query($connection, $query);
         confirmQuery($create_post_query);
         $postId = mysqli_insert_id($connection);
 
-        echo "<div class='alert alert-success' role='alert'>Post Created. <a href='../../post.php?id=$postId'>View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
+        echo "<div class='alert alert-success' role='alert'>Post Created. <a href='../../post.php?id=$postId'>" .
+            "View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
     }
 }
 
@@ -42,19 +44,20 @@ function update_post() {
 
         move_uploaded_file($auxPostImage, "../images/$postImage");
         $postImage = emptyImage($postImage, $postId);
-        $query = "UPDATE posts SET postTitle = '$postTitle', postAuthor = '$postAuthor', postCategoryId = $postCategoryId, postStatus = '$postStatus', ";
-        $query .= "postImage = '$postImage', postTags = '$postTags', postContent = '$postContent', postDate = now(), postCommentCount = $postCommentCount ";
-        $query .= "WHERE postId = $postId";
+        $query = "UPDATE posts SET postTitle = '$postTitle', postAuthor = '$postAuthor', postCategoryId = $postCategoryId, " .
+            "postStatus = '$postStatus', postImage = '$postImage', postTags = '$postTags', postContent = '$postContent', " .
+            "postDate = now(), postCommentCount = $postCommentCount WHERE postId = $postId";
         $update_post_query = mysqli_query($connection, $query);
         confirmQuery($update_post_query);
 
-        echo "<div class='alert alert-success' role='alert'>Post Updated: <a href='../../post.php?id=$postId'>View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
+        echo "<div class='alert alert-success' role='alert'>Post Updated: <a href='../../post.php?id=$postId'>" .
+            "View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
     }
 }
 
 function find_all_posts() {
     global $connection;
-    $query = "SELECT * FROM posts";
+    $query = "SELECT * FROM posts ORDER BY postId DESC";
     $select_posts = mysqli_query($connection, $query);
     confirmQuery($select_posts);
 
@@ -67,6 +70,7 @@ function find_all_posts() {
         $postImage = $row['postImage'];
         $postTags = $row['postTags'];
         $postCommentCount = $row['postCommentCount'];
+        $postViewsCount = $row['postViewsCount'];
         $postDate = $row['postDate'];
         ?>
         <tr>
@@ -79,10 +83,11 @@ function find_all_posts() {
             <td><img src="../images/<?php echo $postImage; ?>" alt="image" width="100"></td>
             <td><?php echo $postTags; ?></td>
             <td><?php echo $postCommentCount; ?></td>
+            <td><a href="posts.php?source=view_all_posts&reset=<?php echo $postId; ?>"><?php echo $postViewsCount; ?></a></td>
             <td><a href="posts.php?source=view_all_posts&publish=<?php echo $postId; ?>">Publish</a></td>
             <td><?php echo $postDate; ?></td>
             <td><a href="posts.php?source=edit_post&id=<?php echo $postId; ?>">Edit</a></td>
-            <td><a href="posts.php?source=view_all_posts&delete=<?php echo $postId; ?>">Delete</a></td>
+            <td><a onclick="javascript: return confirm('Are you sure you want to delete?');" href="posts.php?source=view_all_posts&delete=<?php echo $postId; ?>">Delete</a></td>
         </tr>
         <?php
     }
@@ -206,3 +211,37 @@ function delete_post_table($postId) {
     $delete_query = mysqli_query($connection, $query);
     confirmQuery($delete_query);
 }
+
+function clone_posts($postId) {
+    global $connection;
+    $query = "SELECT * FROM posts WHERE postId = $postId";
+    $select_post_query = mysqli_query($connection, $query);
+
+    while ($row = mysqli_fetch_array($select_post_query)) {
+        $postTitle = $row['postTitle'];
+        $postCategoryId = $row['postCategoryId'];
+        $postDate = $row['postDate'];
+        $postAuthor = $row['postAuthor'];
+        $postStatus = $row['postStatus'];
+        $postImage = $row['postImage'];
+        $postTags = $row['postTags'];
+        $postContent = $row['postContent'];
+        $postCommentCount = 0;
+    }
+
+    $query = "INSERT INTO posts(postTitle, postAuthor, postCategoryId, postStatus, postImage, postTags, postContent, " .
+        "postDate, postCommentCount) VALUES('$postTitle', '$postAuthor', $postCategoryId, '$postStatus', '$postImage', " .
+        "'$postTags', '$postContent', now(), $postCommentCount)";
+    $create_post_query = mysqli_query($connection, $query);
+    confirmQuery($create_post_query);
+}
+
+function reset_views_post() {
+    global $connection;
+    if (isset($_GET['reset'])) {
+        $postId = $_GET['reset'];
+        $query = "UPDATE posts SET postViewsCount = 0 WHERE postId = $postId";
+        $update_views_post = mysqli_query($connection, $query);
+        confirmQuery($update_views_post);
+        header("Location: posts.php?source=view_all_posts");
+    }}

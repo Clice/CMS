@@ -1,4 +1,5 @@
 <?php
+include "admin/functions/functions_users.php";
 include "admin/functions/functions_posts.php";
 include "admin/functions/functions_comments.php";
 include "admin/functions/general_functions.php";
@@ -22,6 +23,8 @@ include "admin/functions/general_functions.php";
 
         <!-- Custom CSS -->
         <link href="css/blog-home.css" rel="stylesheet">
+
+        <link href="css/styles.css" rel="stylesheet">
 
     </head>
 

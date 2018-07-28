@@ -15,6 +15,10 @@ if (isset($_POST['checkBoxArray'])) {
             case 'delete':
                 delete_post_table($postValueId);
                 break;
+
+            case 'clone':
+                clone_posts($postValueId);
+                break;
         }
     }
 }
@@ -28,6 +32,7 @@ if (isset($_POST['checkBoxArray'])) {
                 <option value="Published">Pulished</option>
                 <option value="Draft">Draft</option>
                 <option value="delete">Delete</option>
+                <option value="clone">Clone</option>
             </select>
         </div>
         <div class="col-xs-4">
@@ -46,6 +51,7 @@ if (isset($_POST['checkBoxArray'])) {
                 <th>Image</th>
                 <th>Tags</th>
                 <th>Comments</th>
+                <th>Views</th>
                 <th>Publish</th>
                 <th>Date</th>
             </tr>
@@ -59,4 +65,5 @@ if (isset($_POST['checkBoxArray'])) {
 <?php
 delete_post();
 publish_post();
+reset_views_post();
 ?>

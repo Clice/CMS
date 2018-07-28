@@ -12,19 +12,23 @@ function insert_user() {
         $userRole = $_POST['userRole'];
 
         if ($userRole !== 0) {
+            $userPassword = password_hash($userPassword, PASSWORD_BCRYPT, array('cost' => 12));
             $query = "INSERT INTO users(userName, userPassword, userFirstName, userLastName, userEmail, userRole) ";
             $query .= "VALUES('$userName', '$userPassword', '$userFirstName', '$userLastName', '$userEmail', '$userRole')";
             $add_user_query = mysqli_query($connection, $query);
             confirmQuery($add_user_query);
-            echo "User Created: " . "<a href='users.php?source=view_all_users'>View All Users</a>";
+
+            echo "<div class='alert alert-success' role='alert'>User Created: " .
+                "<a href='users.php?source=view_all_users'>View All Users</a></div>";
         } else {
-            echo "Please, select a role for the user.";
+            echo "<div class='alert alert-danger' role='alert'>Please, select a role for the user.</div>";
         }
     }
 }
 
 function update_user() {
     global $connection;
+    $userPassword = "";
 
     if (isset($_POST['update_user'])) {
         $userId = $_POST['userId'];
@@ -36,15 +40,21 @@ function update_user() {
         $userRole = $_POST['userRole'];
 
         if ($userRole !== 0) {
-            $query = "UPDATE users SET userName = '$userName', userPassword = '$userPassword', userFirstName = '$userFirstName', ";
+            $hashedPassword = password_hash($userPassword, PASSWORD_BCRYPT, array('cost' => 12));
+            $query = "UPDATE users SET userName = '$userName', userPassword = '$hashedPassword', userFirstName = '$userFirstName', ";
             $query .= "userLastName = '$userLastName', userEmail = '$userEmail', userRole = '$userRole' ";
             $query .= "WHERE userId = $userId";
             $update_user_query = mysqli_query($connection, $query);
             confirmQuery($update_user_query);
+
+            echo "<div class='alert alert-success' role='alert'>User Edited: " .
+                "<a href='users.php?source=view_all_users'>View All Users</a></div>";
         } else {
-            echo "Please, select a role to the user.";
+            echo "<div class='alert alert-danger' role='alert'>Please, select a role for the user.</div>";
         }
     }
+
+    return $userPassword;
 }
 
 function find_all_users() {
@@ -106,11 +116,12 @@ function update_profile() {
         $userEmail = $_POST['userEmail'];
         $userName = $_POST['userName'];
         $userPassword = $_POST['userPassword'];
-        $userRole = $_POST['userRole'];
 
-        if ($userRole !== 0) {
+        if ((!empty($userId)) || (!empty($userFirstName)) || (!empty($userLastName)) || (!empty($userEmail)) ||
+            (!empty($userName)) || (!empty($userPassword))) {
+            $userPassword = password_hash($userPassword, PASSWORD_BCRYPT, array('cost' => 12));
             $query = "UPDATE users SET userName = '$userName', userPassword = '$userPassword', userFirstName = '$userFirstName', ";
-            $query .= "userLastName = '$userLastName', userEmail = '$userEmail', userRole = '$userRole' ";
+            $query .= "userLastName = '$userLastName', userEmail = '$userEmail' ";
             $query .= "WHERE userId = $userId";
             $update_profile_query = mysqli_query($connection, $query);
             confirmQuery($update_profile_query);
@@ -121,11 +132,10 @@ function update_profile() {
             $_SESSION['userName'] = $userName;
             $_SESSION['userPassword'] = $userPassword;
             $_SESSION['userEmail'] = $userEmail;
-            $_SESSION['userRole'] = $userRole;
 
-            header("Location: profile.php");
+            echo "<div class='alert alert-success' role='alert'>Profile edited successufully.</div>";
         } else {
-            echo "Please, select a role to the user.";
+            echo "<div class='alert alert-danger' role='alert'>Error editing the profile.</div>";
         }
     }
 }

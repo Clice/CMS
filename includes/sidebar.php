@@ -22,6 +22,11 @@
         <form action="includes/login.php" method="post">
             <div class="row">
                 <div class="col-lg-12">
+                    <?php
+                    if (isset($_GET['msg'])) {
+                        echo $_GET['msg'];
+                    }
+                    ?>
                     <div class="form-group">
                         <input type="text" class="form-control" name="userName" placeholder="Enter Username">
                     </div>

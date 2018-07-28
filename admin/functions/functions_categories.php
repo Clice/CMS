@@ -96,7 +96,8 @@ function select_categories($postCategoryId) {
         $categoryId = $row['categoryId'];
         $categoryTitle = $row['categoryTitle'];
         ?>
-        <option value="<?php echo $categoryId; ?>" <?php if ($categoryId == $postCategoryId) { echo 'selected'; } ?>><?php echo $categoryTitle; ?></option>
+        <option value="<?php echo $categoryId; ?>" <?php if ($categoryId == $postCategoryId) { echo 'selected'; } ?>>
+            <?php echo $categoryTitle; ?></option>
     <?php
     }
 }

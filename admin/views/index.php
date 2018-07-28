@@ -41,7 +41,7 @@ include "../includes/admin_navigation.php";
             <div class="col-lg-12">
                 <h1 class="page-header">
                     Welcome to Admin Panel
-                    <small><?php echo $_SESSION['userFirstName'] . " " . $_SESSION['userLastName']; ?></small>
+                    <small></small>
                 </h1>
             </div>
         </div>

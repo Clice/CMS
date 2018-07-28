@@ -30,6 +30,9 @@
                     <a href="admin/views/">Admin</a>
                 </li>
                 <li>
+                    <a href="registration.php">Registration</a>
+                </li>
+                <li>
                     <a href="#">Services</a>
                 </li>
                 <li>

@@ -3,8 +3,6 @@ include "../includes/admin_header.php";
 include "../includes/admin_navigation.php";
 
 $data = find_user_by_id($_SESSION['userId']);
-
-update_profile();
 ?>
 
     <div id="page-wrapper">
@@ -17,6 +15,7 @@ update_profile();
                         Profile
                         <small>Subheading</small>
                     </h1>
+                    <?php update_profile(); ?>
                     <form action="" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="userId" value="<?php echo $data['userId']; ?>">
                         <div class="form-group">
@@ -38,14 +37,6 @@ update_profile();
                         <div class="form-group">
                             <label for="title">Password</label>
                             <input type="password" class="form-control" name="userPassword" value="<?php echo $data['userPassword']; ?>">
-                        </div>
-                        <div class="form-group">
-                            <label for="title">Role</label>
-                            <select class="form-control" name="userRole" id="">
-                                <option value="0">Select</option>
-                                <option value="Admin" <?php if ($data['userRole'] == "Admin") { echo 'selected'; } ?>>Admin</option>
-                                <option value="Subscriber" <?php if ($data['userRole'] == "Subscriber") { echo 'selected'; } ?>>Subscriber</option>
-                            </select>
                         </div>
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary" name="update_profile" value="Update Profile">

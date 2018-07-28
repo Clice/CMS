@@ -1,5 +1,5 @@
 <?php
-update_user();
+$userPassword = update_user();
 
 if (isset($_GET['id'])) {
     $data = find_user_by_id($_GET['id']);
@@ -24,7 +24,13 @@ if (isset($_GET['id'])) {
         </div>
         <div class="form-group">
             <label for="title">Password</label>
-            <input type="password" class="form-control" name="userPassword" value="<?php echo $data['userPassword']; ?>">
+            <input type="password" class="form-control" name="userPassword"
+                   value="<?php
+                   if ($userPassword === "") {
+                       echo $data['userPassword'];
+                   } else {
+                       echo $userPassword;
+                   } ?>">
         </div>
         <div class="form-group">
             <label for="title">Role</label>

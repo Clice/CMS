@@ -30,6 +30,8 @@ if (!isset($_SESSION['userRole'])) {
 
     <link href="../css/sb-admin.css" rel="stylesheet">
 
+    <link href="../css/loader.css" rel="stylesheet">
+
     <script src="https://cdn.ckeditor.com/ckeditor5/11.0.1/classic/ckeditor.js"></script>
 
     <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">

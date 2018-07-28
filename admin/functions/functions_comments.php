@@ -15,6 +15,7 @@ function insert_comment() {
             $query .= "VALUES('$commentAuthor', '$commentEmail', '$commentContent', $commentPostId, 'Disapproved', now())";
             $create_comment_query = mysqli_query($connection, $query);
             confirmQuery($create_comment_query);
+            echo "<div class='alert alert-success' role='alert'>Comment created successfully.</div>";
         } else {
             echo "<div class='alert alert-danger' role='alert'>Fields cannot be empty.</div>";
         }
