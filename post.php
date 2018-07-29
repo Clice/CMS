@@ -30,7 +30,7 @@ include "includes/navigation.php";
                 while ($row = mysqli_fetch_assoc($select_post_by_id)) {
                     $postId = $row['postId'];
                     $postTitle = $row['postTitle'];
-                    $postAuthor = $row['postAuthor'];
+                    $postAuthorId = $row['postAuthorId'];
                     $postUser = $row['postUser'];
                     $postDate = $row['postDate'];
                     $postImage = $row['postImage'];
@@ -39,29 +39,24 @@ include "includes/navigation.php";
                     $postStatus = $row['postStatus'];
                     $postCommentCount = $row['postCommentCount'];
                     $postViewsCount = $row['postViewsCount'];
-                    ?>
-                    <h1><?php echo $postTitle; ?></h1>
 
-                    <!-- Author -->
-                    <p class="lead">
-                        by <a href="#"><?php echo $postAuthor; ?></a>
-                    </p>
+                    $author_query = "SELECT * FROM users WHERE userId = '$postAuthorId'";
+                    $select_authors = mysqli_query($connection, $author_query);
 
-                    <hr>
-
-                    <!-- Date/Time -->
-                    <p><span class="glyphicon glyphicon-time"></span> <?php echo $postDate; ?></p>
-
-                    <hr>
-
-                    <!-- Preview Image -->
-                    <img class="img-responsive" src="admin/images/<?php echo $postImage; ?>" alt="">
-
-                    <hr>
-
-                    <!-- Post Content -->
-                    <p class="text-justify"><?php echo $postContent; ?></p>
-                    <?php
+                    while ($row2 = mysqli_fetch_assoc($select_authors)) {
+                        ?>
+                        <h1><?php echo $postTitle; ?></h1>
+                        <p class="lead">
+                            by <?php echo $row2['userFirstName'] . " " . $row2['userLastName']; ?>
+                        </p>
+                        <hr>
+                        <p><span class="glyphicon glyphicon-time"></span> <?php echo $postDate; ?></p>
+                        <hr>
+                        <img class="img-responsive" src="admin/images/<?php echo $postImage; ?>" alt="">
+                        <hr>
+                        <p class="text-justify"><?php echo $postContent; ?></p>
+                        <?php
+                    }
                 }
             } else {
                 header("Location: index.php");

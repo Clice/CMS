@@ -8,15 +8,20 @@ function confirmQuery($result) {
     }
 }
 
-//function get_rand_salt() {
-//    global $connection;
-//    $query = "SELECT userRandSalt FROM users";
-//    $select_rand_salt_query = mysqli_query($connection, $query);
-//    confirmQuery($select_rand_salt_query);
-//    $row = mysqli_fetch_array($select_rand_salt_query);
-//    $userRandSalt = $row['userRandSalt'];
-//    return $userRandSalt;
-//}
+function escape ($string) {
+    global $connection;
+    return mysqli_real_escape_string($connection, trim($string));
+}
+
+function get_rand_salt() {
+    global $connection;
+    $query = "SELECT userRandSalt FROM users";
+    $select_rand_salt_query = mysqli_query($connection, $query);
+    confirmQuery($select_rand_salt_query);
+    $row = mysqli_fetch_array($select_rand_salt_query);
+    $userRandSalt = $row['userRandSalt'];
+    return $userRandSalt;
+}
 
 function num_users_online() {
     if (isset($_GET['online_users'])) {

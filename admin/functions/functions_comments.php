@@ -9,7 +9,7 @@ function insert_comment() {
         $commentContent = $_POST['commentContent'];
         $commentPostId = $_POST['commentPostId'];
 
-        if (!empty($commentAuthor) && !empty($commentEmail) && !empty($commentContent) && empty($commentPostId)) {
+        if ((!empty($commentAuthor)) && (!empty($commentEmail)) && (!empty($commentContent)) && (!empty($commentPostId))) {
             add_comment_count($commentPostId);
             $query = "INSERT INTO comments(commentAuthor, commentEmail, commentContent, commentPostId, commentStatus, commentDate) ";
             $query .= "VALUES('$commentAuthor', '$commentEmail', '$commentContent', $commentPostId, 'Disapproved', now())";

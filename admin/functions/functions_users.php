@@ -144,11 +144,13 @@ function delete_user() {
     global $connection;
 
     if (isset($_GET['delete'])) {
-        $userId = $_GET['delete'];
-        $query = "DELETE FROM users WHERE userId = $userId";
-        $delete_query = mysqli_query($connection, $query);
-        confirmQuery($delete_query);
-        header("Location: users.php?source=view_all_users");
+        if (isset($_SESSION['userRole'])) {
+            $userId = mysqli_real_escape_string($connection, $_GET['delete']);
+            $query = "DELETE FROM users WHERE userId = $userId";
+            $delete_query = mysqli_query($connection, $query);
+            confirmQuery($delete_query);
+            header("Location: users.php?source=view_all_users");
+        }
     }
 }
 
@@ -201,4 +203,21 @@ function num_subs_users() {
     confirmQuery($select_all_subs_users);
     $num_subs_users = mysqli_num_rows($select_all_subs_users);
     return $num_subs_users;
+}
+
+function select_users($postAuthorId) {
+    global $connection;
+    $query = "SELECT * FROM users WHERE userRole = 'Admin'";
+    $select_users = mysqli_query($connection, $query);
+    confirmQuery($select_users);
+
+    while ($row = mysqli_fetch_assoc($select_users)) {
+        $userId = $row['userId'];
+        $userFirstName = $row['userFirstName'];
+        $userLastName = $row['userLastName'];
+        ?>
+        <option value="<?php echo $userId; ?>" <?php if ($userId == $postAuthorId) { echo 'selected'; } ?>>
+            <?php echo $userFirstName . " " . $userLastName; ?></option>
+        <?php
+    }
 }

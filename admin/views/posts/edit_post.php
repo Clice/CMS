@@ -20,7 +20,10 @@ if (isset($_GET['id'])) {
         </div>
         <div class="form-group">
             <label for="author">Post Author</label>
-            <input type="text" class="form-control" name="postAuthor" value="<?php echo $data['postAuthor']; ?>">
+            <select class="form-control" name="postAuthorId" id="">
+                <option value="0">Select</option>
+                <?php select_users($data['postAuthorId']);?>
+            </select>
         </div>
         <div class="form-group">
             <label for="post_status">Post Status</label>

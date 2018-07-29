@@ -5,7 +5,7 @@ function insert_post() {
 
     if (isset($_POST['create_post'])) {
         $postTitle = $_POST['postTitle'];
-        $postAuthor = $_POST['postAuthor'];
+        $postAuthorId = $_POST['postAuthorId'];
         $postCategoryId = $_POST['postCategoryId'];
         $postStatus = $_POST['postStatus'];
         $postImage = $_FILES['postImage']['name'];
@@ -14,16 +14,22 @@ function insert_post() {
         $postContent = $_POST['postContent'];
         $postCommentCount = 0;
 
-        move_uploaded_file($auxPostImage, "../images/$postImage");
-        $query = "INSERT INTO posts(postTitle, postAuthor, postCategoryId, postStatus, postImage, postTags, postContent, " .
-            "postDate, postCommentCount) VALUES('$postTitle', '$postAuthor', $postCategoryId, '$postStatus', '$postImage', " .
-            "'$postTags', '$postContent', now(), $postCommentCount)";
-        $create_post_query = mysqli_query($connection, $query);
-        confirmQuery($create_post_query);
-        $postId = mysqli_insert_id($connection);
+        if ((!empty($postTitle)) && (!empty($postAuthorId)) && (!empty($postCategoryId)) &&
+            (!empty($postStatus)) && (!empty($postImage)) && (!empty($auxPostImage)) &&
+            (!empty($postTags)) && (!empty($postContent)) && (!empty($postCommentCount))) {
+            move_uploaded_file($auxPostImage, "../images/$postImage");
+            $query = "INSERT INTO posts(postTitle, postAuthorId, postCategoryId, postStatus, postImage, postTags, postContent, " .
+                "postDate, postCommentCount) VALUES('$postTitle', $postAuthorId, $postCategoryId, '$postStatus', '$postImage', " .
+                "'$postTags', '$postContent', now(), $postCommentCount)";
+            $create_post_query = mysqli_query($connection, $query);
+            confirmQuery($create_post_query);
+            $postId = mysqli_insert_id($connection);
 
-        echo "<div class='alert alert-success' role='alert'>Post Created. <a href='../../post.php?id=$postId'>" .
-            "View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
+            echo "<div class='alert alert-success' role='alert'>Post Created. <a href='../../post.php?id=$postId'>" .
+                "View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
+        } else {
+            echo "<div class='alert alert-danger' role='alert'>Fields cannot be empty.</div>";
+        }
     }
 }
 
@@ -33,7 +39,7 @@ function update_post() {
     if (isset($_POST['update_post'])) {
         $postId = $_POST['postId'];
         $postTitle = $_POST['postTitle'];
-        $postAuthor = $_POST['postAuthor'];
+        $postAuthorId = $_POST['postAuthorId'];
         $postCategoryId = $_POST['postCategoryId'];
         $postStatus = $_POST['postStatus'];
         $postImage = $_FILES['postImage']['name'];
@@ -42,16 +48,22 @@ function update_post() {
         $postContent = $_POST['postContent'];
         $postCommentCount = $_POST['postCommentCount'];
 
-        move_uploaded_file($auxPostImage, "../images/$postImage");
-        $postImage = emptyImage($postImage, $postId);
-        $query = "UPDATE posts SET postTitle = '$postTitle', postAuthor = '$postAuthor', postCategoryId = $postCategoryId, " .
-            "postStatus = '$postStatus', postImage = '$postImage', postTags = '$postTags', postContent = '$postContent', " .
-            "postDate = now(), postCommentCount = $postCommentCount WHERE postId = $postId";
-        $update_post_query = mysqli_query($connection, $query);
-        confirmQuery($update_post_query);
+        if ((!empty($postTitle)) && (!empty($postAuthorId)) && (!empty($postCategoryId)) && (!empty($postId))
+            (!empty($postStatus)) && (!empty($postImage)) && (!empty($auxPostImage)) &&
+            (!empty($postTags)) && (!empty($postContent)) && (!empty($postCommentCount))) {
+            move_uploaded_file($auxPostImage, "../images/$postImage");
+            $postImage = emptyImage($postImage, $postId);
+            $query = "UPDATE posts SET postTitle = '$postTitle', postAuthorId = $postAuthorId, postCategoryId = $postCategoryId, " .
+                "postStatus = '$postStatus', postImage = '$postImage', postTags = '$postTags', postContent = '$postContent', " .
+                "postDate = now(), postCommentCount = $postCommentCount WHERE postId = $postId";
+            $update_post_query = mysqli_query($connection, $query);
+            confirmQuery($update_post_query);
 
-        echo "<div class='alert alert-success' role='alert'>Post Updated: <a href='../../post.php?id=$postId'>" .
-            "View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
+            echo "<div class='alert alert-success' role='alert'>Post Updated: <a href='../../post.php?id=$postId'>" .
+                "View Post</a> or <a href='posts.php?source=view_all_posts'>Edit More Posts.</a></div>";
+        } else {
+            echo "<div class='alert alert-danger' role='alert'>Fields cannot be empty.</div>";
+        }
     }
 }
 
@@ -63,7 +75,7 @@ function find_all_posts() {
 
     while ($row = mysqli_fetch_assoc($select_posts)) {
         $postId = $row['postId'];
-        $postAuthor = $row['postAuthor'];
+        $postAuthorId = $row['postAuthorId'];
         $postTitle = $row['postTitle'];
         $postCategoryId = find_category_by_id($row['postCategoryId']);
         $postStatus = $row['postStatus'];
@@ -72,24 +84,34 @@ function find_all_posts() {
         $postCommentCount = $row['postCommentCount'];
         $postViewsCount = $row['postViewsCount'];
         $postDate = $row['postDate'];
-        ?>
-        <tr>
-            <td><input class="checkBoxes" type="checkbox" name="checkBoxArray[]" value="<?php echo $postId; ?>"></td>
-            <td><?php echo $postId; ?></td>
-            <td><?php echo $postAuthor; ?></td>
-            <td><a href="../../post.php?id=<?php echo $postId;?>"><?php echo $postTitle; ?></a></td>
-            <td><?php echo $postCategoryId; ?></td>
-            <td><?php echo $postStatus; ?></td>
-            <td><img src="../images/<?php echo $postImage; ?>" alt="image" width="100"></td>
-            <td><?php echo $postTags; ?></td>
-            <td><?php echo $postCommentCount; ?></td>
-            <td><a href="posts.php?source=view_all_posts&reset=<?php echo $postId; ?>"><?php echo $postViewsCount; ?></a></td>
-            <td><a href="posts.php?source=view_all_posts&publish=<?php echo $postId; ?>">Publish</a></td>
-            <td><?php echo $postDate; ?></td>
-            <td><a href="posts.php?source=edit_post&id=<?php echo $postId; ?>">Edit</a></td>
-            <td><a onclick="javascript: return confirm('Are you sure you want to delete?');" href="posts.php?source=view_all_posts&delete=<?php echo $postId; ?>">Delete</a></td>
-        </tr>
-        <?php
+
+        $author_query = "SELECT * FROM users WHERE userId = '$postAuthorId'";
+        $select_authors = mysqli_query($connection, $author_query);
+
+        while ($row2 = mysqli_fetch_assoc($select_authors)) {
+            ?>
+            <tr>
+                <td><input class="checkBoxes" type="checkbox" name="checkBoxArray[]" value="<?php echo $postId; ?>">
+                </td>
+                <td><?php echo $postId; ?></td>
+                <td><?php echo $row2['userFirstName'] . " " . $row2['userLastName']; ?></td>
+                <td><a href="../../post.php?id=<?php echo $postId; ?>"><?php echo $postTitle; ?></a></td>
+                <td><?php echo $postCategoryId; ?></td>
+                <td><?php echo $postStatus; ?></td>
+                <td><img src="../images/<?php echo $postImage; ?>" alt="image" width="100"></td>
+                <td><?php echo $postTags; ?></td>
+                <td><?php echo $postCommentCount; ?></td>
+                <td>
+                    <a href="posts.php?source=view_all_posts&reset=<?php echo $postId; ?>"><?php echo $postViewsCount; ?></a>
+                </td>
+                <td><a href="posts.php?source=view_all_posts&publish=<?php echo $postId; ?>">Publish</a></td>
+                <td><?php echo $postDate; ?></td>
+                <td><a href="posts.php?source=edit_post&id=<?php echo $postId; ?>">Edit</a></td>
+                <td><a onclick="javascript: return confirm('Are you sure you want to delete?');"
+                       href="posts.php?source=view_all_posts&delete=<?php echo $postId; ?>">Delete</a></td>
+            </tr>
+            <?php
+        }
     }
 }
 
@@ -101,7 +123,7 @@ function find_post($postId) {
 
     while ($row = mysqli_fetch_assoc($select_post)) {
         $data['postId'] = $row['postId'];
-        $data['postAuthor'] = $row['postAuthor'];
+        $data['postAuthorId'] = $row['postAuthorId'];
         $data['postTitle'] = $row['postTitle'];
         $data['postCategoryId'] = $row['postCategoryId'];
         $data['postStatus'] = $row['postStatus'];
@@ -221,7 +243,7 @@ function clone_posts($postId) {
         $postTitle = $row['postTitle'];
         $postCategoryId = $row['postCategoryId'];
         $postDate = $row['postDate'];
-        $postAuthor = $row['postAuthor'];
+        $postAuthorId = $row['postAuthorId'];
         $postStatus = $row['postStatus'];
         $postImage = $row['postImage'];
         $postTags = $row['postTags'];
@@ -229,8 +251,8 @@ function clone_posts($postId) {
         $postCommentCount = 0;
     }
 
-    $query = "INSERT INTO posts(postTitle, postAuthor, postCategoryId, postStatus, postImage, postTags, postContent, " .
-        "postDate, postCommentCount) VALUES('$postTitle', '$postAuthor', $postCategoryId, '$postStatus', '$postImage', " .
+    $query = "INSERT INTO posts(postTitle, postAuthorId, postCategoryId, postStatus, postImage, postTags, postContent, " .
+        "postDate, postCommentCount) VALUES('$postTitle', '$postAuthorId', $postCategoryId, '$postStatus', '$postImage', " .
         "'$postTags', '$postContent', now(), $postCommentCount)";
     $create_post_query = mysqli_query($connection, $query);
     confirmQuery($create_post_query);
@@ -244,4 +266,5 @@ function reset_views_post() {
         $update_views_post = mysqli_query($connection, $query);
         confirmQuery($update_views_post);
         header("Location: posts.php?source=view_all_posts");
-    }}
+    }
+}

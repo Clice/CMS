@@ -14,7 +14,10 @@
     </div>
     <div class="form-group">
         <label for="author">Post Author</label>
-        <input type="text" class="form-control" name="postAuthor">
+        <select class="form-control" name="postAuthorId" id="">
+            <option value="0">Select</option>
+            <?php select_users(0);?>
+        </select>
     </div>
     <div class="form-group">
         <label for="post_status">Post Status</label>
